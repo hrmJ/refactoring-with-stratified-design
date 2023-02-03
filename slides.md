@@ -54,7 +54,7 @@ So, just to quickly sum up the journey I'm trying to take you guys onto:
 
 <v-click>
 
-![stratum is latin](/wikipedia_ss.png)
+![stratum is latin](https://hrmj.github.io/refactoring-with-stratified-design/wikipedia_ss.png)
 
 </v-click>
 
