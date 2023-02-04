@@ -7,20 +7,20 @@ drawings:
 
 # Refactoring with stratified design
 
-Juho Härme 
+Juho Härme
 
-<!-- 
+<!--
 
-Hi there, so, my talk is not about the cool new frameworks out there, but about 
+Hi there, so, my talk is not about the cool new frameworks out there, but about
 something mysterious called Stratifies design....
 
 And there's another word - refactoring.... Ideally, you would want to talk about designing and
 how you start a new project with a perfect design, a perfectly clear way to think
-about code and structure, but we all know how it is in the real world: 
+about code and structure, but we all know how it is in the real world:
 rather than writing new code on a clean sheet we end up reading old code.
 
 And old code tends to be messy. And tedious to understand. And you are trying
-to just fix this small bug in the way the user sees the train ticket prices 
+to just fix this small bug in the way the user sees the train ticket prices
 rendered on the screen...
 
 Stratified design is a tool that could possibly help with this tedious everyday task.
@@ -30,8 +30,10 @@ Stratified design is a tool that could possibly help with this tedious everyday 
 ---
 
 ---
+
 layout: intro
 other: none
+
 ---
 
 # Outline
@@ -40,7 +42,7 @@ other: none
 
 - Some background
 - Stratified design as a concept
-- A somewhat modified example from a real-world API 
+- A somewhat modified example from a real-world API
 
 </v-clicks>
 
@@ -57,11 +59,11 @@ So, just to quickly sum up the journey I'm trying to take you guys onto:
 
 <v-click>
 
-![stratum is latin](https://hrmj.github.io/refactoring-with-stratified-design/wikipedia_ss.png)
+![stratum is latin](/wikipedia_ss.png)
 
 </v-click>
 
-<!-- 
+<!--
 
 Stratified is a past participle form of an English verb which comes from ... surprise, surprise..
 a Latin noun, stratum,  meaning.. well, basically, something layered, in today's speech. You would, of course,
@@ -84,24 +86,24 @@ showing different layers of chalk. Which is probably a good comparison to a lot 
 
 </v-clicks>
 
-<!-- 
+<!--
 
 Why would we want to follow a pattern, something like stratified design when writing our code?
 
-Well, of course, there are these three fellows: readability, maintainability, testability. There 
+Well, of course, there are these three fellows: readability, maintainability, testability. There
 is a big difference in all those if we compare a code base designed according to something
 and code that is just... well, written, to solve a particular problem at a particlar time.
 
-And if we look at stratified design in particular, a special gain, something we hope to get with 
-this is the ability to focus on the right stuff, not to worry about details belonging to another 
+And if we look at stratified design in particular, a special gain, something we hope to get with
+this is the ability to focus on the right stuff, not to worry about details belonging to another
 layer when you're working on another.
 
 One thing I do want to emphasize here is the fact that this is probably nothing  new to any of you.
-This is probably something you all do, at least to some extent, intuitively and naturally in your 
+This is probably something you all do, at least to some extent, intuitively and naturally in your
 everyday work when reading your co-workers' pull requests and making comments like
 'this would be more readable if you would extract thing here' ... or  just having
-a feeling that some piece of code could be structured differently without 
-being quite able to describe the problem in words. Tools like stratified design 
+a feeling that some piece of code could be structured differently without
+being quite able to describe the problem in words. Tools like stratified design
 are there to help us conceptualize these kind of feelings: they are a tool for us to communicate
 and that's what is imprtant. You can probably make the same kinds of conceptualizations
 with other tools, but this is one I have personally found useful.
@@ -110,7 +112,6 @@ with other tools, but this is one I have personally found useful.
 -->
 
 ---
-
 
 <v-clicks>
 
@@ -132,12 +133,12 @@ const scoreCards: ScoreCard = [
 
 </v-clicks>
 
-<!-- 
+<!--
 
 Now before diving into the real world example I promised to show you, let's look
 at something totally contrived.   Here's some data in the form of typescript objects
 
-This piece of data has players.. Competing in the sport of disc golf... Which is done by 
+This piece of data has players.. Competing in the sport of disc golf... Which is done by
 playing holes, which would ideally be completed within three or four strokes.
 
 So when our player play through the holes they fill in a score card representing how well they
@@ -146,9 +147,11 @@ have performed on the course.
 -->
 
 ---
+
 layout: two-cols
 other: none
 clicks: 13
+
 ---
 
 ```typescript{11-27|0|14|23|13,17|18,19,20|21|all|13,17,18,19,20,24|3-5|7-8|0|all}
@@ -205,10 +208,10 @@ convertResultsToCsvRows ------> arrI[array index]
 
 <!--
 
-Now, let's imagine we want to calculate each player's results and turn them into 
+Now, let's imagine we want to calculate each player's results and turn them into
 a csv file. This made-up code right here might be one way to do it.
 
-We have a function called convertResultsToCsvRows which is basically going through 
+We have a function called convertResultsToCsvRows which is basically going through
 each player, finding their scorecards...
 
 Calculating the total strokes for each player...
@@ -221,24 +224,24 @@ and getting their result by subtracting the par of the hole
 
 
 But you definitely don't get a particular sense of design by looking at this code.
-It's not straightforward to know what are the right details I should be worried aout at 
+It's not straightforward to know what are the right details I should be worried aout at
 each stage of the code and if I were to have to add some new functionality to this code
 or perhaps fix a bug, I would have to spend a good amount of time scanning through each line
 and thinking about what it should be doing.
 
-So we get the sense that this code could use some refactoring, but the problem is: how to 
+So we get the sense that this code could use some refactoring, but the problem is: how to
 communicate that? Let's see, how stratified design could be used as a tool to conceptualize this.
 
 If you recall from the beginning, stratified basically means layered, so we're looking for layers
-in the code. The basic idea is that a well designed code would work on a reasonable number of 
-layers so that each layer contains elements that belong to the same domain or deal with the same 
+in the code. The basic idea is that a well designed code would work on a reasonable number of
+layers so that each layer contains elements that belong to the same domain or deal with the same
 level of detail. With such a layered design, it should be easy for us to quickly find the place
 dealing with the functionality we are interested in at the moment.
 
-Now stratified design is essentially a concept associated with functional programming. This means 
+Now stratified design is essentially a concept associated with functional programming. This means
 that a typical way to arrange the code into layers is to work with multiple different functions
 each consisting of logic belonging to a similar kind of layer. If a function deals with multiple different
-kinds of layers at the same time, that is usually a sign that the reader of the function is probably 
+kinds of layers at the same time, that is usually a sign that the reader of the function is probably
 going to have to use a lot of mental capacity to navigate through it. A function working mainly
 on a single related layer could be called straightforward and is generally something you would want to achieve
 
@@ -260,26 +263,27 @@ line from our current function to the the features and functions it uses.
 Like this:
 
 So the idea here is that at the very bottom we have the low-level stuff, the
-language features like for loops and accessing an array by index. 
+language features like for loops and accessing an array by index.
 
 Then the more generic function calls are closer to these and the more
-domain-specific ones closer to the top. So if we were to refactor this, we 
+domain-specific ones closer to the top. So if we were to refactor this, we
 could use this as a starting point and think about how we could have the
-functions yield a different kind of graphs, ideally one where all the arrows 
+functions yield a different kind of graphs, ideally one where all the arrows
 would be of roughly the same length and point to same kinds of constructs. That
 would be the first step of converting the function to a straightforward
 implementation.
- 
+
 
 -->
 
 ---
+
 other: none
 clicks: 5
+
 ---
 
 # Examples from a KOA api
-
 
 ```typescript{0|all|5|7|5}
 router.post(
@@ -296,22 +300,22 @@ router.post(
 
 <!--
 
-Now let me move on to the more realistic example promised earlier. 
+Now let me move on to the more realistic example promised earlier.
 
-Here we have a nodejs api built using a framework called KOA which has, 
+Here we have a nodejs api built using a framework called KOA which has,
 for instance, the  following endpoint used for creating entities called alarms.
 
 So the point of this api endpoint is to use properties given by a user and create
 an alarm - whatever that means in this context - based on those properties.
 
 Now how is this alarm created? Obviously the logic is inside the createAlarm function.
-But note that that is quite easy to figure out. If I am only worried about, say, 
-fixing the message returned in the body of the API response that's all I need to 
+But note that that is quite easy to figure out. If I am only worried about, say,
+fixing the message returned in the body of the API response that's all I need to
 know about the internal logic of how the alarm is created.
 
-Now this particular endpoint is a newer one, built consciously with 
+Now this particular endpoint is a newer one, built consciously with
 the idea in mind that we're following a certain pattern, we a exlicitly
-desinging the architecture of our code, not just writing code and 
+desinging the architecture of our code, not just writing code and
 looking at the results.
 
 Let's, however, turn to an older endpoint... note that the actual contents are changed from the original,
@@ -320,14 +324,14 @@ but nevertheless, the gist should be clear enough:
 -->
 
 ---
-clicks: 4
----
+
+## clicks: 4
 
 <div class="withScroll">
 
 ```typescript{0|all|51}
 
-router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: PublicContext) => {
+router.post("/api/items",  async (ctx: PublicContext) => {
   const table: string = 'items'
 
   const rp: { [key: string]: any } = ctx.request.body;
@@ -336,7 +340,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
   const key = getKey(id, parentId);
 
   if (key) {
-    const tags: { [key: string]: string }[] = [];
+    const items: { [key: string]: string }[] = [];
     const searchTerms = Object.keys(rp)
       .filter((key) => !["id", "parentId"].includes(key))
       .reduce((obj: { [key: string]: string }, key) => {
@@ -348,12 +352,12 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
     const result = await connector.select("*").from(table).where({ id_key: key });
 
     for (const item of result) {
-      const tagAttributes = tag["tag_attributes"] ?? {};
-      const valmetTagInfo = tagAttributes["valmet_tag"] ?? {};
+      const itemAttributes = item["tag_attributes"] ?? {};
+      const itemInfo = itemAttributes["info"] ?? {};
       const matching: boolean[] = [];
       for (const p of Object.keys(searchTerms)) {
         if (parameters.includes(p)) {
-          if (valmetTagInfo[p] === searchTerms[p]) {
+          if (itemInfo[p] === searchTerms[p]) {
             matching.push(true);
           } else {
             matching.push(false);
@@ -368,7 +372,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
           : false;
 
       if (match) {
-        const tagInfo = {
+        const itemInfo = {
           id: id ?? item.id,
           parentId: parentId ?? item.lineid,
           name: item.name,
@@ -377,7 +381,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
       }
     }
     ctx.status = 200;
-    ctx.body = tags;
+    ctx.body = items;
   } else {
     ctx.throw("Missing id");
   }
@@ -391,17 +395,15 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
 
 No need to go through this line by line but it's clear that this is a completely different
 story: It's rather hard to know what is the level of detail I should concern myself with
-when reading the code for this endpoint. If I am, again, concerned with, say, 
-changing the status code or looking at request parameters, I have to make 
-quite an effort in order to dig out the information I need. 
+when reading the code for this endpoint. If I am, again, concerned with, say,
+changing the status code or looking at request parameters, I have to make
+quite an effort in order to dig out the information I need.
 
 Let's contrast this with the inner details of the createAlarm function mentioned earlier
 
 -->
 
-
 ---
-
 
 ```typescript{0|1-2|3-9|8|5}
 
@@ -420,9 +422,9 @@ export const createAlarm = async (inputProps: FormattedAlarm, id: string, parent
 <!--
 
 It is quite clear that creating an alram is actually a rather complex process. However,
-when dealing with creating an alarm a developer looking at this code does not 
+when dealing with creating an alarm a developer looking at this code does not
 have to be concerned with all the details of the process. This is  a rather straight-forward implementation
-dealing with similar levels of abstraction: 
+dealing with similar levels of abstraction:
 
 1. we are building the different blocks used in creating an alarm
 2. we write the built alarm to database
@@ -433,7 +435,6 @@ know where to go and so on ans so forth. If we were to draw a call graph out of 
 something pretty flat like:
 
 -->
-
 
 ---
 
@@ -448,7 +449,6 @@ createAlarm --> buildModelEntry
 createAlarm ----> writeAlarmToDb
 ```
 
-
 <!--
 
 And, moving on, if we were to check the implementation of.. let's say  buildNewAlarmItem
@@ -457,9 +457,11 @@ it would look along these lines
 -->
 
 ---
+
 layout: two-cols
 other: none
 clicks: 4
+
 ---
 
 ```typescript{all}
@@ -508,19 +510,20 @@ or we could check out getNextModelVersion, it would be dealing with these kinds 
 levels of specificity
 -->
 
-
 ---
+
 layout: two-cols
 other: none
 clicks: 4
+
 ---
 
-
 ```typescript
-
-
-export const getNextModelVersion = async (code: string | undefined, connector: Knex) => {
-  if (!code)  return;
+export const getNextModelVersion = async (
+  code: string | undefined,
+  connector: Knex
+) => {
+  if (!code) return;
   const selectedColumns: (keyof Model)[] = ["col1"];
   const query = () =>
     connector
@@ -536,12 +539,9 @@ export const getNextModelVersion = async (code: string | undefined, connector: K
   const nextVersion = Number(latestVersion) + 1;
   return nextVersion.toString();
 };
-
 ```
 
-
 ::right::
-
 
 <v-click at="2">
 
@@ -554,18 +554,18 @@ getNextModelVersion ---> lf[array index, string methods]
 
 </v-click>
 
-
-
 ---
+
 layout: two-cols
 other: none
+
 ---
 
 <div class="withScroll">
 
 ```typescript{0|all|51}
 
-router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: PublicContext) => {
+router.post("/api/items",  async (ctx: PublicContext) => {
   const table: string = 'items'
 
   const rp: { [key: string]: any } = ctx.request.body;
@@ -574,7 +574,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
   const key = getKey(id, parentId);
 
   if (key) {
-    const tags: { [key: string]: string }[] = [];
+    const items: { [key: string]: string }[] = [];
     const searchTerms = Object.keys(rp)
       .filter((key) => !["id", "parentId"].includes(key))
       .reduce((obj: { [key: string]: string }, key) => {
@@ -586,12 +586,12 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
     const result = await connector.select("*").from(table).where({ id_key: key });
 
     for (const item of result) {
-      const tagAttributes = tag["tag_attributes"] ?? {};
-      const valmetTagInfo = tagAttributes["valmet_tag"] ?? {};
+      const itemAttributes = item["tag_attributes"] ?? {};
+      const itemInfo = itemAttributes["info"] ?? {};
       const matching: boolean[] = [];
       for (const p of Object.keys(searchTerms)) {
         if (parameters.includes(p)) {
-          if (valmetTagInfo[p] === searchTerms[p]) {
+          if (itemInfo[p] === searchTerms[p]) {
             matching.push(true);
           } else {
             matching.push(false);
@@ -606,7 +606,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
           : false;
 
       if (match) {
-        const tagInfo = {
+        const itemInfo = {
           id: id ?? item.id,
           parentId: parentId ?? item.lineid,
           name: item.name,
@@ -615,7 +615,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
       }
     }
     ctx.status = 200;
-    ctx.body = tags;
+    ctx.body = items;
   } else {
     ctx.throw("Missing id");
   }
@@ -625,7 +625,6 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
 
 </div>
 
-
 ::right::
 
 <v-clicks>
@@ -634,9 +633,7 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
 - Aiming for straightforward implementations
 - Helping future readers with the level of detail needed
 
-
 </v-clicks>
-
 
 ---
 
@@ -644,9 +641,8 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
 
 - Normand, Eric 2021: Grokking simplicity. Manning.
 - Płachta, Michał 2022: Grokking functional Programming. Manning
-- Abelson, Harold  & Sussman, Gerald 1985: Structure and Interpretation of Computer Programs
-
-
+- Abelson, Harold & Sussman, Gerald 1985: Structure and Interpretation of Computer Programs
+- Btw: check out https://sli.dev
 
 <div class="mt-7">
 <ul class="text-sm list-none ml-0">
@@ -656,8 +652,4 @@ router.post("/api/items", authenticationRequired, logQueryDetails, async (ctx: P
 </ul>
 </div>
 
-
-
 ---
-
-
