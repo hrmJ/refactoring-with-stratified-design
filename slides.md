@@ -14,6 +14,15 @@ Juho Härme
 Hi there, so, my talk is not about the cool new frameworks out there, but about
 something mysterious called Stratifies design....
 
+.... add Knowit logos etc
+
+My name is Juho, I work at Knowit as a software developer and since we are in Turku I cannot help 
+mentioning that even though I am based in Lempaala and work in Tampere my first dev job was actually in Turku
+writing a project for the faculty of linguistics.. And talking about design and refactoring... I sure think
+that would be a good source of examples... But let's not go there.
+
+Rather, let's talk about these strange terms... stratitfied.. and refactoring...
+
 And there's another word - refactoring.... Ideally, you would want to talk about designing and
 how you start a new project with a perfect design, a perfectly clear way to think
 about code and structure, but we all know how it is in the real world:
@@ -146,8 +155,7 @@ have performed on the course.
 
 ---
 layout: two-cols
-other: none
-clicks: 13
+clicks: 14
 ---
 
 ```typescript{11-27|0|14|23|13,17|18,19,20|21|all|13,17,18,19,20,24|3-5|7-8|0|all}
@@ -318,8 +326,9 @@ but nevertheless, the gist should be clear enough:
 -->
 
 ---
-
-## clicks: 4
+layout: two-cols
+clicks: 4
+---
 
 <div class="withScroll">
 
@@ -500,11 +509,11 @@ generateAlarmItemKey ---> la[language features]
 
 or we could check out getNextModelVersion, it would be dealing with these kinds of
 levels of specificity
+
 -->
 
 ---
 layout: two-cols
-other: none
 clicks: 4
 ---
 
