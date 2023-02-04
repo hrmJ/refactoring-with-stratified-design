@@ -30,10 +30,8 @@ Stratified design is a tool that could possibly help with this tedious everyday 
 ---
 
 ---
-
 layout: intro
 other: none
-
 ---
 
 # Outline
@@ -147,11 +145,9 @@ have performed on the course.
 -->
 
 ---
-
 layout: two-cols
 other: none
 clicks: 13
-
 ---
 
 ```typescript{11-27|0|14|23|13,17|18,19,20|21|all|13,17,18,19,20,24|3-5|7-8|0|all}
@@ -277,10 +273,8 @@ implementation.
 -->
 
 ---
-
 other: none
 clicks: 5
-
 ---
 
 # Examples from a KOA api
@@ -457,11 +451,9 @@ it would look along these lines
 -->
 
 ---
-
 layout: two-cols
 other: none
 clicks: 4
-
 ---
 
 ```typescript{all}
@@ -511,11 +503,9 @@ levels of specificity
 -->
 
 ---
-
 layout: two-cols
 other: none
 clicks: 4
-
 ---
 
 ```typescript
@@ -555,10 +545,8 @@ getNextModelVersion ---> lf[array index, string methods]
 </v-click>
 
 ---
-
 layout: two-cols
 other: none
-
 ---
 
 <div class="withScroll">
