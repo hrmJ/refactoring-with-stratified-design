@@ -7,6 +7,10 @@ html {
 #slide-content {
   background-color: var(--knowit-sand);
   color: var(--knowit-black);
+  background-image: url("./Logotype-Knowit-Digital-black.svg");
+  background-repeat: no-repeat;
+  background-position: right top;
+  background-size: 70px;
 }
 
 #slide-content h1 {
@@ -22,5 +26,9 @@ html {
 }
 
 .withScroll pre {
-  max-height: 450px
+  max-height: 450px;
+}
+
+img {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 }

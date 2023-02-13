@@ -892,21 +892,27 @@ easier time dealing with building the seach terms, perfoerming the matvhing
 or checking haow the data is actually fetched. PLUS... putting just the 
 functional programmer's hat on for a while... Isolating the function 
 dealing with side effects would be a huge improvement to have, too... in terms
-of testability and 
-
-
-
-
+of testability in particular.
 
 -->
 
 ---
+
+---
+layout: two-cols
+---
+
+
+![stone](/sandstone.jpg)
+
+::right::
 
 <v-clicks>
 
 - Tools to conceptualize "you should make this more readable"
 - Aiming for straightforward implementations
 - Helping future readers with the level of detail needed
+- Building new.... ...and refactoring old
 
 </v-clicks>
 
@@ -921,11 +927,12 @@ of testability and
 - Abelson, Harold & Sussman, Gerald 1985: Structure and Interpretation of Computer Programs
 - Btw: check out https://sli.dev
 
+
 <div class="mt-7">
 <ul class="text-sm list-none ml-0">
-<li class='list-none ml-0'>Linkedin: https://www.linkedin.com/in/juho-harme/ </li>
-<li class='list-none ml-0'>Blog: https://hrmj.hashnode.dev/</li>
-<li class="list-none ml-0">Twitter: @jharme</li>
+<li class='list-none ml-0'><logos-linkedin-icon /> https://www.linkedin.com/in/juho-harme/ </li>
+<li class="list-none ml-0"><logos-twitter/> @jharme</li>
+<li class='list-none ml-0'><mdi-pencil /> https://hrmj.hashnode.dev/</li>
 </ul>
 </div>
 
