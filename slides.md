@@ -49,7 +49,7 @@ other: none
 
 - Some background
 - Stratified design as a concept
-- A somewhat modified example from a real-world API
+- A  modified example based on a real-world API
 
 </v-clicks>
 
@@ -201,11 +201,11 @@ const convertResultsToCsvRows = (players: Player[]): string[] => {
 
 ```mermaid
 flowchart TD
-convertResultsToCsvRows --> getPlayersCard ---> nativem
-convertResultsToCsvRows --> getTotal --> sum --> nativem
-convertResultsToCsvRows ------> nativem[native array methods]
-convertResultsToCsvRows ------> forl[for loop]
-convertResultsToCsvRows ------> arrI[array index]
+convertResultsToCsvRows --> getPlayersCard ----> nativem
+convertResultsToCsvRows ---> getTotal --> sum --> nativem
+convertResultsToCsvRows -----> nativem[native array methods]
+convertResultsToCsvRows -----> forl[for loop]
+convertResultsToCsvRows -----> arrI[array index]
 ```
 
 </v-click>
@@ -326,9 +326,6 @@ but nevertheless, the gist should be clear enough:
 -->
 
 ---
-layout: two-cols
-clicks: 4
----
 
 <div class="withScroll">
 
@@ -354,8 +351,8 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
     const result = await connector.select("*").from(table).where({ id_key: key });
 
-    for (const item of result) {
-      const itemAttributes = item["tag_attributes"] ?? {};
+    for (const resultRow of result) {
+      const itemAttributes = resultRow["attributes"] ?? {};
       const itemInfo = itemAttributes["info"] ?? {};
       const matching: boolean[] = [];
       for (const p of Object.keys(searchTerms)) {
@@ -376,11 +373,11 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
       if (match) {
         const itemInfo = {
-          id: id ?? item.id,
-          parentId: parentId ?? item.lineid,
-          name: item.name,
+          id: id ?? resultRow.id,
+          parentId: parentId ?? resultRow.lineid,
+          name: resultRow.name,
         };
-        items.push(tagInfo);
+        items.push(itemInfo);
       }
     }
     ctx.status = 200;
@@ -424,7 +421,7 @@ export const createAlarm = async (inputProps: FormattedAlarm, id: string, parent
 
 <!--
 
-It is quite clear that creating an alram is actually a rather complex process. However,
+It is quite clear that creating an alarm is actually a rather complex process. However,
 when dealing with creating an alarm a developer looking at this code does not
 have to be concerned with all the details of the process. This is  a rather straight-forward implementation
 dealing with similar levels of abstraction:
@@ -482,8 +479,7 @@ export const buildNewAlarmItem = (
     item_key,
     item_name,
     item_description,
-    uby: userId,
-    iby: userId,
+    author: userId,
     item_type: "AlarmItemType",
   };
 };
@@ -507,17 +503,16 @@ generateAlarmItemKey ---> la[language features]
 
 <!--
 
-or we could check out getNextModelVersion, it would be dealing with these kinds of
-levels of specificity
+
 
 -->
 
 ---
 layout: two-cols
-clicks: 4
+clicks: 6
 ---
 
-```typescript
+```typescript{all|all|15|9|17|12-14}
 export const getNextModelVersion = async (
   code: string | undefined,
   connector: Knex
@@ -542,7 +537,7 @@ export const getNextModelVersion = async (
 
 ::right::
 
-<v-click at="2">
+<v-click at="1">
 
 ```mermaid
 flowchart TD
@@ -553,15 +548,50 @@ getNextModelVersion ---> lf[array index, string methods]
 
 </v-click>
 
+<!--
+
+Or we could check out getNextModelVersion, it would be dealing with these kinds of
+levels of specificity... Actually, a story about a bug that was caught related to 
+version numbers.. I picked this versioning example here because we did actually,
+working with this api and creating theses alarms with it, have a problem related 
+to some of the version numbering that was used for those items. And when a bug with 
+version numbers was noticed, I started to look into the problem and I didn't really 
+have to make any major effort in trying to find out which piece of code 
+deals with the versioning stuff.. I looked at the endpoint's code, figured out 
+the createAlarm function, inside that moved into the layer about version numbers 
+and here... I had good guarantees that a bug related to versioning would have 
+something to do with a function dealing with getting the next version. 
+
+And since this function operates on the layer of query builder calls and low-level 
+language features, I had the right level of detail in mind, I was already focused on 
+the right kind of stuff and knew that here are the sql queries that are responsible for 
+getting the next version.... And sure enough, there was a string-based column that a
+query was ordered by, but the assumption was made that this would behave like an integer
+based column... So a fix was rather easy to implement... But the key is that having a
+straightforward structure in the code really helps you to more quickly find the 
+pieces of code responsible for each  functionality and also helps you kinda turn 
+your mind already on the right channel, so to say, on the right level of detail . Working
+on a single layer at a time makes grasping the code just so much easiear.
+
+So that is a kindof a success story about a more designed and thought-out part of a codebase I've
+been working with and the ease at which you, in the ideal case, can approach
+fixing bugs and adding new functionality. But let's now return to the older api end point
+and think about if we were to, actually, start refactoring that, what could 
+the process look like. And let's start off by looking at the different layers we currently have 
+in that particular piece of code.
+
+
+-->
+
 ---
 layout: two-cols
+clicks: 8
 other: none
 ---
 
 <div class="withScroll">
 
-```typescript{0|all|51}
-
+```typescript{0|19|11-17|20-32|34-39|42-47|0}
 router.post("/api/items",  async (ctx: PublicContext) => {
   const table: string = 'items'
 
@@ -582,8 +612,8 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
     const result = await connector.select("*").from(table).where({ id_key: key });
 
-    for (const item of result) {
-      const itemAttributes = item["tag_attributes"] ?? {};
+    for (const resultRow of result) {
+      const itemAttributes = resultRow["attributes"] ?? {};
       const itemInfo = itemAttributes["info"] ?? {};
       const matching: boolean[] = [];
       for (const p of Object.keys(searchTerms)) {
@@ -604,11 +634,11 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
       if (match) {
         const itemInfo = {
-          id: id ?? item.id,
-          parentId: parentId ?? item.lineid,
-          name: item.name,
+          id: id ?? resultRow.id,
+          parentId: parentId ?? resultRow.lineid,
+          name: resultRow.name,
         };
-        items.push(tagInfo);
+        items.push(itemInfo);
       }
     }
     ctx.status = 200;
@@ -624,6 +654,254 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
 ::right::
 
+<v-clicks at="7">
+
+```mermaid
+flowchart TD
+endpoint --------> lf[language features]
+endpoint -------> km[knex methods]
+endpoint --> getKey
+```
+
+
+</v-clicks>
+
+<!--
+
+So, to start things off, in the previous slide we knew perfectly well, that
+we would be dealing with database calls, query builder methods and things of that sort.
+Here, we find those things too.
+
+...and we do find some array methods... There is clearly some logic here to compile a list of 
+search terms...
+
+
+...and there is another for loop which iterates over some... results... and... 
+after sitting down... getting a cup of coffee.. and having a deep breath... you kind of
+get to understand that we are actually doing something with a set of results... 
+formatting them in a certain way... Extracting some matches... and making a check over 
+those matches in order to... I guess determine, if something actually has been found... 
+and then, again, formatting the thing we are giving back to the user of the api endpoint.
+
+
+Now, in a sense... This kinda does resemble the previous function we looked at about 
+the model versioning stuff.. Thinking in terms of languiage features and levels of abstraction
+We might actually say that there aren't that many different layers present.. The problem is...
+That instead of a layered chalk rock like the one we saw in the beginning.. This 
+feels more like...
+
+-->.
+
+---
+layout: center
+other: none
+---
+
+<!--
+
+...walking in the desert.. Where it is true, that there kind of is only one layer,
+but the layer is so huge that it nonetheless requires some extraordinary effort
+to find your way and to actually find the stuff you're looking for.
+
+So here it is, actually, not so much a question of how should we re-organize the different layers
+but rather how to have meaningful layers in the first place.
+
+Let's give it a quick try using the principles of stratified design in our minds from the get-go..
+
+-->
+
+![sand](/dessert.jpg)
+
+---
+layout: two-cols
+clicks: 13
+other: none
+---
+
+<div class="withScroll">
+
+```typescript{0|19|19|21|21,10|47,51|19|19|19-21|11-16|25-39|42-45}
+router.post("/api/items",  async (ctx: PublicContext) => {
+  const table: string = 'items'
+
+  const rp: { [key: string]: any } = ctx.request.body;
+  const { params } = rp as { id: string; parentId: string };
+
+  const key = getKey(id, parentId);
+
+  if (key) {
+    const items: { [key: string]: string }[] = [];
+    const searchTerms = Object.keys(rp)
+      .filter((key) => !["id", "parentId"].includes(key))
+      .reduce((obj: { [key: string]: string }, key) => {
+        obj[key] = rp[key];
+        return obj;
+      }, {});
+
+
+    const result = await connector.select("*").from(table).where({ id_key: key });
+
+    for (const resultRow of result) {
+      const itemAttributes = resultRow["attributes"] ?? {};
+      const itemInfo = itemAttributes["info"] ?? {};
+      const matching: boolean[] = [];
+      for (const p of Object.keys(searchTerms)) {
+        if (parameters.includes(p)) {
+          if (itemInfo[p] === searchTerms[p]) {
+            matching.push(true);
+          } else {
+            matching.push(false);
+          }
+        }
+      }
+      const match =
+        matching.length > 0
+          ? matching.every(function (m) {
+              return m === true;
+            })
+          : false;
+
+      if (match) {
+        const itemInfo = {
+          id: id ?? resultRow.id,
+          parentId: parentId ?? resultRow.lineid,
+          name: resultRow.name,
+        };
+        items.push(itemInfo);
+      }
+    }
+    ctx.status = 200;
+    ctx.body = items;
+  } else {
+    ctx.throw("Missing id");
+  }
+});
+
+```
+
+</div>
+
+::right::
+
+<div v-if="$slidev.nav.clicks > 1 && $slidev.nav.clicks < 3 || $slidev.nav.clicks === 7 ">
+
+```mermaid
+flowchart TD
+endpoint -----> lf[fetching raw data]
+```
+</div>
+
+<div v-if="$slidev.nav.clicks === 8 ">
+
+```mermaid
+flowchart TD
+endpoint -----> lf[fetching raw data]
+endpoint -----> fd[filtering data]
+```
+</div>
+
+<div v-if="$slidev.nav.clicks === 9 ">
+
+```mermaid
+flowchart TD
+endpoint -----> lf[fetching raw data]
+endpoint -----> fd[filtering data]
+fd --> st[build search terms]
+```
+</div>
+
+
+<div v-if="$slidev.nav.clicks === 10 ">
+
+```mermaid
+flowchart TD
+endpoint -----> lf[fetching raw data]
+endpoint -----> fd[filtering data]
+fd --> st[building search terms]
+fd --> mtc[checking match]
+```
+</div>
+
+
+<div v-if="$slidev.nav.clicks > 10 ">
+
+```mermaid
+flowchart TD
+endpoint -----> lf[fetching raw data]
+endpoint -----> fd[filtering data]
+fd --> st[building search terms]
+fd --> mtc[checking match]
+fd --> ri[building return item]
+```
+</div>
+
+
+<!--
+
+So, to begin with, the initial analysis we did in the previous slide
+already highlighted some important details. Namely, there is one clear
+call which introduces side effects to the whole endpoint and it would 
+be nice to isolate that. That is, of course, the database call ie 
+query builder methods used for selecting raw data from the database.
+And that byitself is a good candidate to form a separate function call
+on a specific layer.
+
+Now, it seems to be the case that in the next phase of the procedure 
+we use the raw data, expecting it to be something iterable, and 
+check for some conditions and criteria that data item should meet.
+
+As a matter of fact, we seem to be mainly intrested in building 
+an array of filtered items which we then give back to the api user.
+
+So in terms of possible functions we could have here... We already sketched
+a function for fetching raw data.
+
+Now we could definitely have one for filtering the data.. And you could probably
+consider that to belong to pretty much the same layer as data fetched...
+But then the data filtering function clearly will have to deal with the 
+actual logic of how the filtering is done... 
+
+And after spending some time looking at this code you kind of 
+manage to figure out that this filtering might be the crux of the 
+whole endpoint and that is what actually contains the serious 
+business logic that does the heavy lifting.
+
+So one thing that needs to be done in order for the filtering 
+to work is the fact that we use the input provided by the user 
+to construct a set of search terms we will be using in the filtering 
+process. Which is pretty much what we have going on here.
+
+Then we use these search terms and check the individual data items in 
+order to see whether or not they actually match the criteria defined
+by the user.
+
+...and, finally, we extract only certain parts of the data items
+and format a particular kind of response
+
+And.... That's about it! Having a function adhering to a structure 
+like this would definitely make the implementation of this particular
+api endpoint a lot more straightforward and easier to reason about.
+Even though we have not actually yet built these functions, just looking at
+this graph gives ...at least for me.. some comfort in the fact that
+the process is not that complicated after all. It would certainly help
+if I knew the level of detail I need to be concerned with. Clearly, on 
+the top level, just knowing that we are fetching data and filtering the data
+gives me enough information about what is happening here. Then, 
+when implementing something new or fixing some bugs...  I would have a lot 
+easier time dealing with building the seach terms, perfoerming the matvhing
+or checking haow the data is actually fetched. PLUS... putting just the 
+functional programmer's hat on for a while... Isolating the function 
+dealing with side effects would be a huge improvement to have, too... in terms
+of testability and 
+
+
+
+
+
+-->
+
+---
+
 <v-clicks>
 
 - Tools to conceptualize "you should make this more readable"
@@ -632,7 +910,9 @@ router.post("/api/items",  async (ctx: PublicContext) => {
 
 </v-clicks>
 
+
 ---
+
 
 # Literature
 
